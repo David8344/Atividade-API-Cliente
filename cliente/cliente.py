@@ -14,9 +14,8 @@ def index():
 
 @app.route("/users", methods=['GET', 'POST'])
 def users():
-    template = "users.html"
     users = requests.get(api_url + "users").json()
-
+    template = "users.html"
     if request.method == 'POST':
         id_user_delete = request.form.get('id_user_delete')
         url_delete = api_url + "users/" + id_user_delete
@@ -133,7 +132,7 @@ def new_post():
 
 @app.route("/tarefas", methods=['GET', 'POST'])
 def todos():
-    template = "tarefas.html"
+    template = "todos.html"
     tarefas = requests.get(api_url + "todos").json()
     return render_template(template, tarefas=tarefas)
 
@@ -165,7 +164,7 @@ def new_tarefa():
 
 @app.route("/tarefas/<int:tarefa_id>/deletar", methods=['GET', 'POST'])
 def delete_tarefa(tarefa_id):
-    template = "tarefas.html"
+    template = "todos.html"
     tarefas = requests.get(api_url + "todos").json()
     url = api_url + "todos/{}".format(tarefa_id)
     if requests.get(url).status_code == 200:
