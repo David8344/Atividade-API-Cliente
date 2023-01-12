@@ -1,5 +1,5 @@
-from flask import Flask, jsonify
-import json
+from flask import Flask, jsonify, request
+import json, requests
 
 
 app = Flask(__name__)
@@ -16,10 +16,23 @@ photos_obj = json.load(open('photos.json'))
 def index():
     return todos_obj
 
-@app.route('/users')
+@app.route('/users', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def users():
-    return users_obj
-
+    if request.method == 'POST':
+        data = request.get_json()
+        data['id'] = len(users) + 1
+        users_obj.append(data)
+        return jsonify(data)
+    elif request.method == 'PATCH':
+        data = request.patch_json()
+        users_obj[data['id']-1] = data
+        return jsonify(data)
+    elif request.method == 'DELETE':
+        data = request.delete_json()
+        users_obj.pop(data['id']-1)
+        return jsonify(data)
+    else:
+        return users_obj
 
 
 @app.route('/users/<int:user_id>')
@@ -34,8 +47,21 @@ def usertodos(userid):
             user_todos.append(todo)
     return user_todos
 
-@app.route('/todos')
+@app.route('/todos', methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def todos():
+    if request.method == 'POST':
+        data = request.get_json()
+        data['id'] = len(todos) + 1
+        todos_obj.append(data)
+        return jsonify(data)
+    elif request.method == 'PATCH':
+        data = request.patch_json()
+        todos_obj[data['id']-1] = data
+        return jsonify(data)
+    elif request.method == 'DELETE':
+        data = request.delete_json()
+        todos_obj.pop(data['id']-1)
+        return jsonify(data)
     return todos_obj
 
 @app.route('/todos/<int:todo_id>')

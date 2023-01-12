@@ -1,194 +1,48 @@
 from flask import Flask
 from flask import render_template, request
 import requests
+import MyClasses
+
+funcoes_users = MyClasses.usuario()
+funcoes_task = MyClasses.tarefas()
 
 
-api_url = "https://jsonplaceholder.typicode.com/"
+api_url = "http://127.0.0.1:5000/"
 
 app = Flask(__name__)
 
 @app.route("/")
 def index():
-    template = "index.html"
-    return render_template(template)
+    return render_template("index.html")
 
-@app.route("/users", methods=['GET', 'POST'])
+@app.route("/users", methods=['GET', 'POST', 'PATCH', 'DELETE'])
 def users():
-    users = requests.get(api_url + "users").json()
-    template = "users.html"
     if request.method == 'POST':
-        id_user_delete = request.form.get('id_user_delete')
-        url_delete = api_url + "users/" + id_user_delete
-        if requests.get(url_delete).status_code == 200:
-            requests.delete(url_delete)
-            users = requests.get(api_url + "users").json()
-            return render_template(template, users=users, message="Usuário apagado com sucesso!", class_alert="alert-success")
-        else:
-            print("User not found")
-            return render_template(template, users=users, message="Erro ao apagar usuário, talvez o usuário não exista! ", class_alert="alert-danger")
-
-    return render_template(template, users=users)
-
-#criar um novo usuário do jsonplacehoder
-@app.route("/users/new", methods=['GET', 'POST'])
-def new_user():
-    template = "new_user.html"
-    if request.method == 'POST':
-        name = request.form.get('name')
-        email = request.form.get('email')
-        username = request.form.get('username')
-        phone = request.form.get('phone')
-        website = request.form.get('website')
-        company_name = request.form.get('company_name')
-        eddress_street = request.form.get('eddress_street')
-        eddress_suite = request.form.get('eddress_suite')
-        eddress_city = request.form.get('eddress_city')
-        eddress_zipcode = request.form.get('eddress_zipcode')
-        eddress_geo_lat = request.form.get('eddress_geo_lat')
-        eddress_geo_lng = request.form.get('eddress_geo_lng')
-
-        data = {
-            "name": name,
-            "email": email,
-            "username": username,
-            "phone": phone,
-            "website": website,
-            "company": {
-                "name": company_name
-            },
-            "address": {
-                "street": eddress_street,
-                "suite": eddress_suite,
-                "city": eddress_city,
-                "zipcode": eddress_zipcode,
-                "geo": {
-                    "lat": eddress_geo_lat,
-                    "lng": eddress_geo_lng
-                }
-            }
+        title = request.form['title']
+        completed = request.form['completed']
+        user_id = request.form['user_id']
+        todo = {
+            'title': title,
+            'completed': completed,
+            'userId': user_id
         }
-        requests.post(api_url + "users", data=data)
-        return render_template(template, message="Usuário criado com sucesso!", class_alert="alert-success")
-    return render_template(template)
-
-
-@app.route("/users/<int:user_id>")
-def user_details(user_id):
-    template = "user_details.html"
-    # Get user details
-    user = requests.get(api_url + "users/{}".format(user_id)).json()
-    # Get user posts
-    posts = requests.get(api_url + "posts?userId={}".format(user_id)).json()
-    # Get user albums
-    albums = requests.get(api_url + "albums?userId={}".format(user_id)).json()
-    #Get user todos
-    todos = requests.get(api_url + "todos?userId={}".format(user_id)).json()
-    return render_template(template, user=user, posts=posts, albums=albums, todos=todos)
-    
-
-@app.route('/posts', methods=['GET', 'POST'])
-def posts():
-    template = "posts.html"
-    posts = requests.get(api_url + "posts").json()
-
-    if request.method == 'POST':
-        id_posts = request.form.get("id_post_delete")
-        url = api_url + "posts/{}".format(id_posts)
-        if requests.get(url).status_code == 200:        
-            requests.delete(url)
-            print(requests.delete(url).status_code)
-            return render_template(template, posts=posts, message="Post apagado com sucesso!", class_alert="alert-success")
-        else:
-            print('Erro ao apagar post!')
-            print(requests.delete(url).status_code)
-            return render_template(template, posts=posts, message="Erro ao apagar post, talvez o post não exista! ", class_alert="alert-danger")
-
-    return render_template(template, posts=posts)
-
-
-@app.route("/posts/new", methods=['GET', 'POST'])
-def new_post():
-    template = "new_post.html"
-
-    if request.method == 'POST':
-        title = request.form.get("title")
-        body = request.form.get("body")
-        user_id = request.form.get("user_id")
-        data = {
-            "title": title,
-            "body": body,
-            "userId": user_id
-        }
-        response = requests.post(api_url + "posts", data=data)
-        if response.status_code == 201:
-            print(response.status_code)
-            return render_template(template, message="Post criado com sucesso!", class_alert="alert-success")
-        else:
-            print('Erro ao criar post!')
-            print(response.status_code)
-            return render_template(template, message="Erro ao criar post!", class_alert="alert-danger")
-
-    return render_template(template)
-
-@app.route("/tarefas", methods=['GET', 'POST'])
-def todos():
-    template = "todos.html"
-    tarefas = requests.get(api_url + "todos").json()
-    return render_template(template, tarefas=tarefas)
-
-@app.route("/tarefas/new", methods=['GET', 'POST'])
-def new_tarefa():
-    template = "new_tarefa.html"
-
-    if request.method == 'POST':
-        title = request.form.get("title")
-        completed = request.form.get("description")
-        status = request.form.get("status")
-        user_id = request.form.get("user_id")
-        data = {
-            "title": title,
-            "completed": completed,
-            "status": status,
-            "userId": user_id
-        }
-        response = requests.post(api_url + "todos", data=data)
-        if response.status_code == 201:
-            print(response.status_code)
-            return render_template(template, message="Tarefa criada com sucesso!", class_alert="alert-success")
-        else:
-            print('Erro ao criar tarefa!')
-            print(response.status_code)
-            return render_template(template, message="Erro ao criar tarefa!", class_alert="alert-danger")
-
-    return render_template(template)
-
-@app.route("/tarefas/<int:tarefa_id>/deletar", methods=['GET', 'POST'])
-def delete_tarefa(tarefa_id):
-    template = "todos.html"
-    tarefas = requests.get(api_url + "todos").json()
-    url = api_url + "todos/{}".format(tarefa_id)
-    if requests.get(url).status_code == 200:
-        requests.delete(url)
-        print(requests.delete(url).status_code)
-        code = requests.delete(url).status_code
-
-        return render_template(template, tarefas=tarefas, message="Tarefa apagada com sucesso! cod.: " + str(code), class_alert="alert-success")
+        funcoes_users.create_todo(todo)
+        return 'Tarefa criada'
     else:
-        print('Erro ao apagar tarefa!')
-        print(requests.delete(url).status_code)
-        code = requests.delete(url).status_code
-        return render_template(template, tarefas=tarefas, message="Erro ao apagar tarefa, talvez a tarefa não exista! cod.: " + str(code), class_alert="alert-danger")
+        users = requests.get(api_url + "users").json()
+        return render_template("users.html", users=users)
+@app.route("/users/<int:user_id>")
+def user(user_id):
+    user = requests.get(api_url + "users/"+user_id)
+    
+    return render_template("user.html")
+@app.route("/todos")
+def todos():
+    todos = requests.get(api_url + "todos").json()
+    return render_template("todos.html", todos=todos)
 
-@app.route("/comments")
-def comments():
-    template = "comments.html"
-    comments = requests.get(api_url + "comments").json()
-    return render_template(template, comments=comments)
+@app.route("/todos/<int:id>")
+def todo(id):
+    return render_template("todo.html")
 
-
-
-
-
-if __name__ == "__main__":
-    app.secret_key = "jsonplaceholder"
-    app.run(debug=True, port=5001)
+app.run(debug=True, port=5001)
