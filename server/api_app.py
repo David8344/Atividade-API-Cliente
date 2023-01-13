@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 import json, requests
 
 
@@ -22,17 +22,18 @@ def users():
         data = request.get_json()
         data['id'] = len(users) + 1
         users_obj.append(data)
-        return jsonify(data)
+        return jsonify(data), 201
     elif request.method == 'PATCH':
         data = request.patch_json()
         users_obj[data['id']-1] = data
-        return jsonify(data)
+        return jsonify(data), 200
     elif request.method == 'DELETE':
         data = request.delete_json()
         users_obj.pop(data['id']-1)
-        return jsonify(data)
+        return jsonify(data), 200
     else:
         return users_obj
+   
 
 
 @app.route('/users/<int:user_id>')
@@ -53,16 +54,17 @@ def todos():
         data = request.get_json()
         data['id'] = len(todos) + 1
         todos_obj.append(data)
-        return jsonify(data)
+        return jsonify(data), 201
     elif request.method == 'PATCH':
         data = request.patch_json()
         todos_obj[data['id']-1] = data
-        return jsonify(data)
+        return jsonify(data), 200
     elif request.method == 'DELETE':
         data = request.delete_json()
         todos_obj.pop(data['id']-1)
-        return jsonify(data)
-    return todos_obj
+        return jsonify(data), 200
+    else:
+        return todos_obj
 
 @app.route('/todos/<int:todo_id>')
 def todo(todo_id):
