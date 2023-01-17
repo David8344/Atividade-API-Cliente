@@ -49,7 +49,7 @@ def create_users():
             'lat': lat,
             'lng': lng
         }
-        funcoes_users.create_user(user)
+        funcoes_users.criar(user)
         return 'Usuário criado'
     else:
         return render_template("new_user.html")

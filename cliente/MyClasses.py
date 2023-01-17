@@ -1,8 +1,8 @@
 
 from urllib import response
 import requests
-api_users = "https://jsonplaceholder.typicode.com/users/"
-api_tasks = "https://jsonplaceholder.typicode.com/todos/"
+api_users = "127.0.0.1:5001/users/"
+api_tasks = "127.0.0.1:5001/todos/"
 
 class usuario:
 
@@ -12,7 +12,7 @@ class usuario:
         for usuario in usuarios:
             print(usuario["id"], usuario["name"])
             
-    def criar():
+    def criar(user, ):
         nome = input("digite o nome do usuario")
         username = input("digite o nome de usuario")
         email = input("digite o email do usuario")
