@@ -21,17 +21,36 @@ def users():
 
 @app.route("/users/new", methods=['GET','POST'])
 def create_users():
+    
     if request.method == 'POST':
         name = request.form['name']
         username = request.form['username']
         email = request.form['email']
+        phone = request.form['phone']
+        website = request.form['website']
+        company = request.form['company']
+        address_suite = request.form['address_suite']
+        city = request.form['city']
+        address_street = request.form['address_street']
+        zipcode = request.form['zipcode']
+        lat = request.form['lat']
+        lng = request.form['lng']
         user = {
             'name': name,
             'username': username,
-            'email': email
+            'email': email,
+            'phone': phone,
+            'website': website,
+            'company': company,
+            'eddress_suite': address_suite,
+            'city': city,
+            'address_street': address_street,
+            'zipcode': zipcode,
+            'lat': lat,
+            'lng': lng
         }
         funcoes_users.create_user(user)
-        return 'Usuário atualizado'
+        return 'Usuário criado'
     else:
         return render_template("new_user.html")
   

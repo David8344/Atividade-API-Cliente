@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request, Response
+from flask import Flask, jsonify, request, Response, make_response
 import json, requests
 
 
@@ -22,9 +22,9 @@ def get_users():
 
 @app.route('/users', methods=['POST'])
 def create_user():
-    data = request.get_json()
-    users_obj.append(data)
-    return jsonify(data)
+    user = request.get_json()
+    users_obj.append(user)
+    return make_response(jsonify(user), 201)
 
 @app.route('/users/<int:user_id>', methods=['PATCH'])
 def update_user(user_id):
