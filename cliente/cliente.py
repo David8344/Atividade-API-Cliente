@@ -31,18 +31,29 @@ def users():
     else:
         users = requests.get(api_url + "users").json()
         return render_template("users.html", users=users)
+
+@app.route("/users/new", methods=['GET', 'POST'])
+def new_user():
+    return render_template("new_user.html")
+
 @app.route("/users/<int:user_id>")
 def user(user_id):
-    user = requests.get(api_url + "users/"+user_id)
+    user = requests.get(api_url + "users/{}".format(user_id)).json()
+    return render_template("user.html", user=user)
     
-    return render_template("user.html")
 @app.route("/todos")
 def todos():
     todos = requests.get(api_url + "todos").json()
     return render_template("todos.html", todos=todos)
 
+@app.route("/todos/new", methods=['GET', 'POST'])
+def new_todo():
+    return render_template("new_todo.html")
+
 @app.route("/todos/<int:id>")
 def todo(id):
     return render_template("todo.html")
+
+
 
 app.run(debug=True, port=5001)
