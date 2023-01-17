@@ -1,12 +1,23 @@
 {% extends 'base.html'%}
 
 {% block content %}
+  
+
+
+
 <ul class="nav justify-content-center bg-dark ">
   <li class="nav-item bg-success rounded m-2">
     <a class="nav-link text-white" href="/users/new">Criar usuario</a>
   </li>
+  <li>
+    <form class="d-flex">
+        <input class="form-control m-2"  placeholder="User Id" aria-label="User_id">
+      </form>
+  </li>
+  
+  
   <li class="nav-item bg-warning rounded m-2">
-    <a class="nav-link text-white" href="/users/update">Atualizar usuario</a>
+    <a class="nav-link text-white" href="/users/1/update">Atualizar usuario</a>
   </li>
   <li class="nav-item bg-danger rounded m-2">
     <a class="nav-link text-white" href="/users/delete">Deletar usuario</a>

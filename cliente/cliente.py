@@ -14,27 +14,49 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template("index.html")
-
-@app.route("/users", methods=['GET', 'POST', 'PATCH', 'DELETE'])
+@app.route("/users" , methods=['GET'])
 def users():
-    if request.method == 'POST':
-        title = request.form['title']
-        completed = request.form['completed']
-        user_id = request.form['user_id']
-        todo = {
-            'title': title,
-            'completed': completed,
-            'userId': user_id
-        }
-        funcoes_users.create_todo(todo)
-        return 'Tarefa criada'
-    else:
-        users = requests.get(api_url + "users").json()
-        return render_template("users.html", users=users)
+    users = requests.get(api_url + "users").json()
+    return render_template("users.html", users=users)
 
-@app.route("/users/new", methods=['GET', 'POST'])
-def new_user():
-    return render_template("new_user.html")
+@app.route("/users/new", methods=['GET','POST'])
+def create_users():
+    if request.method == 'POST':
+        name = request.form['name']
+        username = request.form['username']
+        email = request.form['email']
+        user = {
+            'name': name,
+            'username': username,
+            'email': email
+        }
+        funcoes_users.create_user(user)
+        return 'Usuário atualizado'
+    else:
+        return render_template("new_user.html")
+  
+@app.route("/users/<int:user_id>/update", methods=['GET','PATCH'])
+def update_users(user_id):
+    if request.method == 'PATCH':
+        name = request.form['name']
+        username = request.form['username']
+        email = request.form['email']
+        user = {
+            'name': name,
+            'username': username,
+            'email': email
+        }
+        funcoes_users.update_user(user)
+
+        return 'Usuário atualizado'
+    else:
+        return render_template("update_user.html")
+       
+
+@app.route("/users/<int:user_id>/delete", methods=['DELETE'])
+def delete_user(user_id):
+    funcoes_users.delete_user(user_id)
+    return 'Usuário deletado'
 
 @app.route("/users/<int:user_id>")
 def user(user_id):
@@ -45,6 +67,8 @@ def user(user_id):
 def todos():
     todos = requests.get(api_url + "todos").json()
     return render_template("todos.html", todos=todos)
+
+
 
 @app.route("/todos/new", methods=['GET', 'POST'])
 def new_todo():
