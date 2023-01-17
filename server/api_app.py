@@ -20,22 +20,25 @@ def index():
 def get_users():
         return users_obj
 
-@app.route('/users', methods=['POST'])
+@app.route('/users/new', methods=['POST'])
 def create_user():
     user = request.get_json()
-    users_obj.append(user)
-    return make_response(jsonify(user), 201)
+    dados_json = json.dumps(user)
+    return make_response(jsonify(dados_json), 201)
 
 @app.route('/users/<int:user_id>', methods=['PATCH'])
 def update_user(user_id):
     data = request.get_json()
+    data['id'] = len(users_obj) + 1
+
     users_obj[user_id-1] = data
-    return jsonify(data)
+    return make_response(jsonify(data), 201)
 
 @app.route('/users/<int:user_id>', methods=['DELETE'])
 def delete_user(user_id):
     users_obj.pop(user_id-1)
-    return jsonify({'success': True})
+    return make_response ({'success': True})
+
    
 
 

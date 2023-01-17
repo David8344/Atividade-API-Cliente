@@ -21,7 +21,7 @@ def users():
 
 @app.route("/users/new", methods=['GET','POST'])
 def create_users():
-    
+    users = requests.get(api_url + "users").json()
     if request.method == 'POST':
         name = request.form['name']
         username = request.form['username']
@@ -47,9 +47,10 @@ def create_users():
             'address_street': address_street,
             'zipcode': zipcode,
             'lat': lat,
-            'lng': lng
+            'lng': lng,
         }
-        funcoes_users.criar(user)
+        #faça um post para a api
+        users.append(user)
         return 'Usuário criado'
     else:
         return render_template("new_user.html")
