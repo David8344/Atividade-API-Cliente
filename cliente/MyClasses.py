@@ -82,19 +82,18 @@ class tarefas:
             print("tarefa criada")
     
     def atualizar():
-        id = input("Digite o id da tarefa: ")
-        response = requests.get(api_tasks + id)
+        #Pegue os dados do formulário da pagina update_todo.html e envie para a API com o metodo patch
+        id_tasks = input("Digite o id da tarefa: ")
+        response = requests.get(api_tasks + id_tasks)
         if response.status_code == 200:
             task =response.json()
             print("Tarefa com o título: [", task["title"], "] encontrada")
             print("Status: ", task["completed"])
             print()
-            print()
-            print("Digite os dados da tarefa")
+            print("Digite os novos dados da tarefa")
             titulo = input("Digite o título da tarefa: ")
             status = input("Digite o status da tarefa: ")
-            user = input("digite o id do usuario que ira realizar a tarefa ")
-            response = requests.put(api_tasks + id, data = {"userId": user, "title": titulo, "completed": status})
+            response = requests.patch(api_tasks + id_tasks, data = {"title": titulo, "completed": status})
             print()
             print(response.status_code)
             print()

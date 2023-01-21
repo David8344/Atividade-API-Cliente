@@ -11,19 +11,26 @@
   </li>
   <li>
     <form class="d-flex">
-        <input class="form-control m-2"  placeholder="User Id" aria-label="User_id">
+        <input class="form-control m-2"  placeholder="User Id" aria-label="User_id" id="id_user_action">
       </form>
   </li>
-  
-  
+  <li class="nav-item bg-info rounded m-2">
+    <a class="nav-link text-white" id="btn_ver_user">Ver usuario</a>
+  </li>
   <li class="nav-item bg-warning rounded m-2">
-    <a class="nav-link text-white" href="/users/1/update">Atualizar usuario</a>
+    <a class="nav-link text-white" id="btn_update_user" >Atualizar usuario</a>
   </li>
   <li class="nav-item bg-danger rounded m-2">
-    <a class="nav-link text-white" href="/users/delete">Deletar usuario</a>
+    <a class="nav-link text-white" id="btn_delete_user" >Deletar usuario</a>
   </li>
 </ul>
-
+<div class="col-12 py-3">
+  {% if message %}
+      <div class="alert {{class_alert}}" role="alert">
+      {{ message }}
+      </div>
+  {% endif %}
+</div>
 <div class="container">
   <div class="col-12">
     <h1>Usuários</h1>
@@ -57,4 +64,35 @@
     </table>
   </div>
 </div>
+#faça com que o botão de atualizar tarefa colete os dados do campo de id e atualize a tarefa com o id correspondente
+<script>
+    var id_todo_action = document.getElementById("id_user_action");
+    var btn_update = document.getElementById("btn_update_user");
+    btn_update.addEventListener("click", function(){
+        var id_user = id_user_action.value;
+        console.log(id_user);
+        window.location.href = "/users/update/" + id_user;
+    });
+</script>
+#faça com que o botão de deletar tarefa colete os dados do campo de id e delete a tarefa com o id correspondente
+<script>
+    var id_todo_action = document.getElementById("id_user_action");
+    var btn_delete = document.getElementById("btn_delete_user");
+    btn_delete.addEventListener("click", function(){
+        var id_user = id_user_action.value;
+        console.log(id_user);
+        window.location.href = "/users/delete/" + id_user;
+    });
+</script>
+#faça com que o botão de ver tarefa colete os dados do campo de id e mostre a tarefa com o id correspondente
+<script>
+    var id_todo_action = document.getElementById("id_todo_action");
+    var btn_update = document.getElementById("btn_ver_user");
+    btn_update.addEventListener("click", function(){
+        var id_user = id_user_action.value;
+        console.log(id_user);
+        window.location.href = "/users/" + id_user;
+    });
+</script>
+
 {% endblock %}

@@ -5,7 +5,7 @@
     <div class="container py-3">
         <div class="row">
             <div class="col-12">
-                <h2>Criar nova tarefa</h2>
+                <h2>Digite os novos dados da tarefa</h2>
             </div>
             <div class="col-12">
                 <div class="d-flex gap-5 py-3">
@@ -38,12 +38,12 @@
                         <label for="user_id" class="form-label">Id do usuário que ira realizar a tarefa</label>
                         <input class="form-control" id="user_id" name="user_id" rows="3" placeholder="id do usuário para esta tarefa" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Criar</button>
+                    <button type="submit" class="btn btn-warning" id="atualizar_tarefa">Atualizar</button>
                 </form>
             </div>
         </div>
     </div>
-
+    
     <script>
 
         const alert = document.querySelector('.alert');

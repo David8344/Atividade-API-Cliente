@@ -2,17 +2,7 @@
 {% block title %} Vendo o usuário {% endblock %}
 
 {% block content %}
-<ul class="nav justify-content-center bg-dark ">
-    <li class="nav-item bg-primary rounded m-2">
-        <a class="nav-link text-white" href="/users">Voltar</a>
-    </li>
-    <li class="nav-item bg-warning rounded m-2">
-      <a class="nav-link text-white" href="/users/update/{{ user.id }}">Atualizar usuario</a>
-    </li>
-    <li class="nav-item bg-danger rounded m-2">
-      <a class="nav-link text-white" href="/users/delete/{{ user.id }}">Deletar usuario</a>
-    </li>
-  </ul>
+
 <div class="container">
 
     <div class="card">
@@ -40,6 +30,21 @@
             </div>
         </div>
     </div>
-
+    <ul class="nav justify-content-center bg-light ">
+        <li class="nav-item bg-primary rounded m-2">
+            <a class="nav-link text-white" href="/users">Voltar</a>
+        </li>
+        <li class="nav-item bg-danger rounded m-2">
+          <a class="nav-link text-white" id="btn_delete_user">Deletar usuario</a>
+        </li>
+      </ul>
 </div>
+#faça com que ao clicar no botão de deletar envie-se um post para a rota /users/<id>/delete e redirecione para a rota /users
+<script>
+    var btn_delete = document.getElementById("btn_delete_user");
+    btn_delete.addEventListener("click", function () {
+        window.location.href = "/users";
+        method: "POST";
+    });
+</script>
 {% endblock %}

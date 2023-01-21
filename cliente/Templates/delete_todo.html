@@ -2,18 +2,7 @@
 {% block title %} Vendo o usuário {% endblock %}
 
 {% block content %}
-<ul class="nav justify-content-center bg-dark ">
-    <li class="nav-item bg-primary rounded m-2">
-        <a class="nav-link text-white" href="/todos">Voltar</a>
-    </li>
-    <li class="nav-item bg-warning rounded m-2">
-      <a class="nav-link text-white" href="/todos/update/{{ todo.id }}">Atualizar tarefa</a>
-    </li>
-    <li class="nav-item bg-danger rounded m-2">
-      <a class="nav-link text-white" href="/todos/delete/{{ todo.id }}">Deletar tarefa</a>
-    </li>
-    
-  </ul>
+
 <div class="container">
 
     <div class="card">
@@ -36,6 +25,21 @@
             </div>
         </div>
     </div>
-
+    <ul class="nav justify-content-center bg-light ">
+        <li class="nav-item bg-primary rounded m-2">
+            <a class="nav-link text-white" href="/todos">Voltar</a>
+        </li>
+        <li class="nav-item bg-danger rounded m-2">
+          <a class="nav-link text-white" id="btn_delete_todo">Deletar tarefa</a>
+        </li>
+    </ul>
 </div>
+<script>
+    var btn_delete = document.getElementById("btn_delete_todo");
+    btn_delete.addEventListener("click", function () {
+        window.location.href = "/todos";
+        method: "POST";
+    });
+</script>
+
 {% endblock %}

@@ -2,20 +2,34 @@
 {% block content %}
 <ul class="nav justify-content-center bg-dark ">
     <li class="nav-item bg-success rounded m-2">
-      <a class="nav-link text-white" href="/todos/new">Criar tarefa</a>
+        <a class="nav-link text-white" href="/todos/new">Criar tarefa</a>
+    </li>
+    <li class="nav-item bg-dark rounded m-2">
+        <a class="nav-link text-white" >Acesso Rapido</a>
     </li>
     <li>
-        <form class="d-flex" >
-            <input class="form-control m-2"  placeholder="Todo Id" aria-label="Todo_id">
-          </form>
-      </li>
+        <form class="d-flex">
+            <input class="form-control m-2" placeholder="Todo Id " aria-label="Todo_id" id="id_todo_action"
+                name="id_todo_action">
+        </form>
+    </li>
+    <li class="nav-item bg-info rounded m-2">
+        <a class="nav-link text-white" id="btn_ver_todo">ver tarefa</a>
+    </li>
     <li class="nav-item bg-warning rounded m-2">
-      <a class="nav-link text-white" href="/todos/update">Atualizar tarefa</a>
+        <a class="nav-link text-white" id="btn_update_todo">Atualizar tarefa</a>
     </li>
     <li class="nav-item bg-danger rounded m-2">
-      <a class="nav-link text-white" href="/todos/delete">Deletar tarefa</a>
+        <a class="nav-link text-white" id="btn_delete_todo">Deletar tarefa</a>
     </li>
-  </ul>
+</ul>
+<div class="col-12 py-3">
+    {% if message %}
+    <div class="alert {{class_alert}}" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
+</div>
 <div class="container">
     <div class="row">
         <div class="col-12">
@@ -42,8 +56,38 @@
                 </tbody>
             </table>
         </div>
-        
+
     </div>
 
 </div>
+#faça com que o botão de atualizar tarefa colete os dados do campo de id e atualize a tarefa com o id correspondente
+<script>
+    var id_todo_action = document.getElementById("id_todo_action");
+    var btn_update = document.getElementById("btn_update_todo");
+    btn_update.addEventListener("click", function () {
+        var id_todo = id_todo_action.value;
+        console.log(id_todo);
+        window.location.href = "/todos/update/" + id_todo;
+    });
+</script>
+#faça com que o botão de deletar tarefa colete os dados do campo de id e delete a tarefa com o id correspondente
+<script>
+    var id_todo_action = document.getElementById("id_todo_action");
+    var btn_delete = document.getElementById("btn_delete_todo");
+    btn_delete.addEventListener("click", function () {
+        var id_todo = id_todo_action.value;
+        console.log(id_todo);
+        window.location.href = "/todos/delete/" + id_todo;
+    });
+</script>
+#faça com que o botão de ver tarefa colete os dados do campo de id e mostre a tarefa com o id correspondente
+<script>
+    var id_todo_action = document.getElementById("id_todo_action");
+    var btn_update = document.getElementById("btn_ver_todo");
+    btn_update.addEventListener("click", function () {
+        var id_todo = id_todo_action.value;
+        console.log(id_todo);
+        window.location.href = "/todos/" + id_todo;
+    });
+</script>
 {% endblock %}

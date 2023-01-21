@@ -14,10 +14,16 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     return render_template("index.html")
+
 @app.route("/users" , methods=['GET'])
 def users():
     users = requests.get(api_url + "users").json()
     return render_template("users.html", users=users)
+
+@app.route("/todos", methods=['GET',])
+def todos():
+    todos = requests.get(api_url + "todos").json()
+    return render_template("todos.html", todos=todos)
 
 @app.route("/users/new", methods=['GET','POST'])
 def create_users():
@@ -35,29 +41,67 @@ def create_users():
         zipcode = request.form['zipcode']
         lat = request.form['lat']
         lng = request.form['lng']
-        user = {
+        user = {"address":{
+                'city': city,
+                'geo': { 'lat': lat, 'lng': lng },
+                'street': address_street,
+                'suite': address_suite,
+                'zipcode': zipcode
+            },
             'name': name,
             'username': username,
             'email': email,
             'phone': phone,
             'website': website,
             'company': company,
-            'eddress_suite': address_suite,
-            'city': city,
-            'address_street': address_street,
             'zipcode': zipcode,
-            'lat': lat,
-            'lng': lng,
+       
         }
-        #faça um post para a api
-        users.append(user)
-        return 'Usuário criado'
+        if requests.get(api_url + "users").status_code == 200:
+            return render_template('new_user.html', message="Usuário criado com sucesso!", class_alert="alert-success")
+        else:
+            return render_template('new_user.html', message="Erro ao apagar usuário, talvez o usuário não exista! ", class_alert="alert-danger")
     else:
         return render_template("new_user.html")
+
+@app.route("/todos/new", methods=['GET', 'POST'])
+def create_todo():
+    todos = requests.get(api_url + "todos").json()
+    if request.method == 'POST':
+        title = request.form['title']
+        completed = request.form['completed']
+        user_id = request.form['user_id']
+        todo = {
+            'title': title,
+            'completed': completed,
+            'user_id': user_id
+        }
+        if requests.get(api_url + "todos").status_code == 200:
+            return render_template('new_todo.html', message="Tarefa criada com sucesso!", class_alert="alert-success")
+        else:
+            return render_template('new_todo.html', message="Erro ao criar tarefa, talvez o usuário não exista! ", class_alert="alert-danger")
+    else:
+        return render_template("new_todo.html")
+@app.route("/users/<int:user_id>")
+def user(user_id):
+    user = requests.get(api_url + "users/{}".format(user_id)).json()
+    return render_template("user.html", user=user)
+
+@app.route("/todos/<int:todo_id>")
+def todo(todo_id):
+    todo = requests.get(api_url + "todos/{}".format(todo_id)).json()
+    return render_template("todo.html", todo=todo)
+
+@app.route("/users/<int:userid>/todos")
+def usertodos(user_id):
+    user_todos = requests.get(api_url + "users/{}todos".format(user_id)).json()
+    return render_template('user_todos.html', user_todos=user_todos)
+
+
   
-@app.route("/users/<int:user_id>/update", methods=['GET','PATCH'])
+@app.route("/users/update/<int:user_id>", methods=['GET','PATCH', 'POST'])
 def update_users(user_id):
-    if request.method == 'PATCH':
+    if request.method == 'POST':
         name = request.form['name']
         username = request.form['username']
         email = request.form['email']
@@ -66,38 +110,52 @@ def update_users(user_id):
             'username': username,
             'email': email
         }
-        funcoes_users.update_user(user)
+        if requests.get(api_url + "users").status_code == 200:
+            return render_template('update_user.html', message="Usuario atualizado com sucesso!", class_alert="alert-success")
+        else:
+            return render_template('update_user.html', message="Erro ao atualizar usuario! ", class_alert="alert-danger")
 
-        return 'Usuário atualizado'
     else:
         return render_template("update_user.html")
+
+@app.route("/todos/update/<int:todo_id>", methods=['GET','PATCH', 'POST'])
+def update_todos(todo_id):
+    if request.method == 'POST':
+        title = request.form['title']
+        completed = request.form['completed']
+        todo = {
+            'title': title,
+            'completed': completed
+        }
+        if requests.get(api_url + "todos").status_code == 200:
+            return render_template('update_todo.html', message="Tarefa atualizada com sucesso!", class_alert="alert-success")
+        else:
+            return render_template('update_todo.html', message="Erro ao atualizar tarefa! ", class_alert="alert-danger")
+    else:
+        return render_template("update_todo.html")
        
 
-@app.route("/users/<int:user_id>/delete", methods=['DELETE'])
+@app.route("/users/delete/<int:user_id>", methods=['DELETE', 'GET', 'POST'])
 def delete_user(user_id):
-    funcoes_users.delete_user(user_id)
-    return 'Usuário deletado'
+    if request.method == 'POST':
+        if requests.get(api_url + "users").status_code == 200:
+            return render_template('users.html', message="Usuario deletado com sucesso!", class_alert="alert-success")
+        else:
+            return render_template('users.html', message="Erro ao apagar usuario, talvez o usuario não exista! ", class_alert="alert-danger")
+    else:
+        user = requests.get(api_url + "users/{}".format(user_id)).json()
+        return render_template("delete_user.html", user=user)
 
-@app.route("/users/<int:user_id>")
-def user(user_id):
-    user = requests.get(api_url + "users/{}".format(user_id)).json()
-    return render_template("user.html", user=user)
-    
-@app.route("/todos")
-def todos():
-    todos = requests.get(api_url + "todos").json()
-    return render_template("todos.html", todos=todos)
-
-
-
-@app.route("/todos/new", methods=['GET', 'POST'])
-def new_todo():
-    return render_template("new_todo.html")
-
-@app.route("/todos/<int:id>")
-def todo(id):
-    return render_template("todo.html")
-
+@app.route("/todos/delete/<int:todo_id>", methods=['DELETE', 'GET', 'POST'])
+def delete_todo(todo_id):
+    todo = requests.get(api_url + "todos/{}".format(todo_id)).json()
+    if request.method == 'POST':
+        if requests.get(api_url + "todos").status_code == 200:
+            return render_template('todos.html', message="Tarefa deletada com sucesso!", class_alert="alert-success")
+        else:
+            return render_template('todos.html', message="Erro ao apagar tarefa, talvez a tarefa não exista! ", class_alert="alert-danger")
+    else:
+        return render_template("delete_todo.html", todo=todo)
 
 
 app.run(debug=True, port=5001)
